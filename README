@@ -1,1 +1,254 @@
-test
+# Periodic Table Storage System with BOSL2 Joiners
+
+A modular 3D printable storage system for organizing periodic table element samples, using professional-grade BOSL2 dovetail joiners for secure interlocking connections.
+
+![Periodic Table Box Configurations](periodic_table_diagram.png)
+
+## Project Overview
+
+### The Goal
+Create a complete, modular storage system that mimics the layout of the periodic table, where each element gets its own labeled box that physically connects to adjacent elements using precise dovetail joints. This allows you to:
+
+- **Organize element samples** in their proper periodic table positions
+- **Build the table incrementally** as you acquire new samples
+- **Maintain structural integrity** through mechanical interlocking joints
+- **Easily identify elements** with front-facing card slots for labels
+- **Customize for different layouts** including lanthanide/actinide series placement
+
+### Why BOSL2?
+This project upgrades from custom dovetail geometry to the professional [BOSL2 library](https://github.com/BelfrySCAD/BOSL2) for several key advantages:
+
+- **Proven geometry**: Tested dovetail profiles that actually work when printed
+- **Better tolerances**: Built-in printer compensation and fit adjustment
+- **Standardized slopes**: Proper woodworking angles (4°, 6°, 8°) for strong joints
+- **Chamfering support**: Rounded edges for easier assembly and better print quality
+- **Cleaner code**: Modern OpenSCAD practices with attachment systems
+
+## Files Included
+
+- `periodic_table_boxes_bosl2.scad` - Main box generation script
+- `periodic_table_configs_bosl2.json` - Pre-configured parameter sets for all box types
+- `periodic_table_demo.scad` - Demonstration script showing box connections
+- `README.md` - This documentation
+
+## Installation & Setup
+
+### 1. Install BOSL2 Library
+
+**Option A: Automatic Installation (Recommended)**
+```bash
+# In OpenSCAD, go to:
+# File → Library Manager → Search for "BOSL2" → Install
+```
+
+**Option B: Manual Installation**
+```bash
+git clone https://github.com/BelfrySCAD/BOSL2.git
+# Copy BOSL2 folder to your OpenSCAD libraries directory
+# Windows: Documents/OpenSCAD/libraries/
+# macOS: Documents/OpenSCAD/libraries/
+# Linux: ~/.local/share/OpenSCAD/libraries/
+```
+
+### 2. Download Project Files
+Save all project files to the same directory where you'll be working.
+
+### 3. Verify Installation
+Open `periodic_table_demo.scad` in OpenSCAD and render (F6). You should see a 3x3 grid of connected boxes.
+
+## Box Types & Configuration
+
+The system uses 13 different box configurations to handle every position in the periodic table:
+
+### Standard Boxes
+- **Type 1 - Inner Box** (~60 boxes): Most elements in the main table body
+- **Type 13 - Gap Spacer** (~5 boxes): Fills layout gaps with no card slots
+
+### Edge Boxes  
+- **Type 2 - Top Edge** (~13 boxes): Top row excluding corners (open north wall)
+- **Type 3 - Right Edge** (~6 boxes): Noble gases excluding corners (male dovetails only)
+- **Type 4 - Bottom Edge** (~13 boxes): Bottom row excluding corners (open south wall)  
+- **Type 5 - Left Edge** (~6 boxes): Alkali metals excluding corners (female dovetails only)
+
+### Corner Boxes
+- **Type 6 - Top-Left** (1 box): Hydrogen (H)
+- **Type 7 - Top-Right** (1 box): Helium (He)
+- **Type 8 - Bottom-Left** (1 box): Francium (Fr)
+- **Type 9 - Bottom-Right** (1 box): Oganesson (Og)
+
+### Lanthanide/Actinide Series
+- **Type 10 - Left End** (2 boxes): Lanthanum (La), Actinium (Ac)
+- **Type 11 - Middle** (28 boxes): 14 elements per row
+- **Type 12 - Right End** (2 boxes): Lutetium (Lu), Lawrencium (Lr)
+
+## Usage Instructions
+
+### Method 1: Using Parameter Presets (Recommended)
+
+1. **Open the main script**: Load `periodic_table_boxes_bosl2.scad` in OpenSCAD
+
+2. **Enable Customizer**: 
+   - Go to `Window → Customizer`
+   - If not visible, enable it in `View → Hide Customizer`
+
+3. **Load parameter sets**:
+   - Click the preset icon (folder) in Customizer
+   - Select `periodic_table_configs_bosl2.json`
+   - Choose desired box type from dropdown
+
+4. **Generate and export**:
+   - Render the model (F6)
+   - Export STL (`File → Export → Export as STL`)
+
+### Method 2: Manual Parameter Setting
+
+Modify parameters directly in the script:
+
+```scad
+// Example: Create a Type 3 (Right Edge) box
+BoxLengthUnits = 1;
+BoxWidthUnits = 1;
+NorthWallOpen = 0;
+SouthWallOpen = 0;
+SuppressFemaleDT = 0;  // Has female dovetails
+SuppressMaleDT = 1;    // No male dovetails (right edge)
+EnableCardSlot = true;
+CardSlotSide = 1;      // Front face
+```
+
+## Key Parameters
+
+### Box Dimensions
+- `BoxUnits`: Base unit size (40mm = one periodic table cell)
+- `BoxHeight`: Overall height (40mm default)
+- `BoxWall`: Wall thickness (1.5mm default)
+- `BoxFloor`: Floor thickness (2mm default)
+
+### BOSL2 Dovetail Settings
+- `DTWidth`: Dovetail width at widest point (2mm)
+- `DTHeight`: How far dovetail projects (2mm) 
+- `DTSlide`: Dovetail thickness/depth (1.5mm)
+- `DTSlope`: Angle steepness - 6 is standard (4=steep, 8=gentle)
+- `DTChamfer`: Edge rounding amount (0.1mm)
+- `DTSlop`: Printer tolerance adjustment (0.1mm)
+
+### Wall Configuration
+- `NorthWallOpen`: 1 = open top wall, 0 = closed
+- `SouthWallOpen`: 1 = open bottom wall, 0 = closed
+- `SuppressFemaleDT`: 1 = no receiving dovetails, 0 = include them
+- `SuppressMaleDT`: 1 = no protruding dovetails, 0 = include them
+
+### Card Slots
+- `EnableCardSlot`: true/false
+- `CardSlotSide`: 0=none, 1=front, 2=back, 3=both
+- `CardWidth`: Label width (30mm default)
+- `CardSlotHeight`: Slot height (2mm default)
+
+## Assembly Guide
+
+### Print Settings
+- **Layer Height**: 0.2mm recommended
+- **Infill**: 15-20% sufficient
+- **Supports**: Generally not needed due to dovetail design
+- **Orientation**: Print boxes upright (as designed)
+
+### Assembly Process
+
+1. **Start with corners**: Print and test-fit corner boxes first
+2. **Work row by row**: Complete horizontal rows before moving vertically  
+3. **Test fit**: Dovetails should slide together with slight resistance
+4. **Adjust if needed**: Increase `DTSlop` for looser fit, decrease for tighter
+
+### Dovetail Assembly Direction
+- **Male dovetails** (red in diagram): Slide INTO adjacent boxes
+- **Female dovetails** (blue in diagram): RECEIVE dovetails from adjacent boxes
+- Assembly direction is typically left-to-right, bottom-to-top
+
+## Customization Options
+
+### Scaling for Different Element Sizes
+```scad
+// For larger samples
+BoxUnits = 50;        // 50mm cells instead of 40mm
+BoxHeight = 50;       // Taller boxes
+
+// For smaller/compact version  
+BoxUnits = 30;        // 30mm cells
+BoxHeight = 30;       // Shorter profile
+```
+
+### Different Dovetail Strength
+```scad
+// Stronger joints
+DTSlope = 4;          // Steeper angle = more holding power
+DTWidth = 2.5;        // Wider dovetails
+
+// Easier assembly
+DTSlope = 8;          // Gentler angle = easier insertion
+DTSlop = 0.15;        // More clearance
+```
+
+### Label Customization
+```scad
+// Larger cards
+CardWidth = 35;
+CardSlotHeight = 3;
+
+// Different position
+CardSlotYPos = 15;    // Higher up on box
+```
+
+## Troubleshooting
+
+### Dovetails Too Tight
+- Increase `DTSlop` parameter (try 0.15 or 0.2)
+- Check printer calibration
+- Sand dovetail surfaces lightly
+
+### Dovetails Too Loose  
+- Decrease `DTSlop` parameter (try 0.05)
+- Increase `DTWidth` slightly
+- Check for printer over-extrusion
+
+### Parts Don't Line Up
+- Verify you're using correct box types for positions
+- Check wall open/closed settings match diagram
+- Ensure consistent `BoxUnits` across all parts
+
+### Print Quality Issues
+- Enable chamfering: `DTChamfer = 0.1` or higher
+- Reduce layer height to 0.15mm for fine dovetails  
+- Adjust print speed for better dimensional accuracy
+
+## Advanced Usage
+
+### Creating Custom Layouts
+Modify the JSON file to create your own element arrangements or add custom box types for specific applications.
+
+### Batch Production
+Use the JSON parameter sets with OpenSCAD's command-line interface to generate all 118+ boxes automatically:
+
+```bash
+openscad -o type1_inner.stl -p periodic_table_configs_bosl2.json -P type1_inner_box periodic_table_boxes_bosl2.scad
+```
+
+### Integration with Other Projects
+The BOSL2 dovetail system is compatible with other BOSL2-based designs, allowing you to connect this storage system to other modular projects.
+
+## Contributing
+
+Found an issue or have an improvement? 
+- Test thoroughly with actual prints
+- Document any parameter changes needed for different printers
+- Share photos of successful builds!
+
+## License
+
+This project builds upon:
+- Original interlocking box concept (various creators)
+- BOSL2 library (Revar Desmera and contributors) 
+- Distributed under similar open-source terms
+
+---
+
+**Happy printing and element collecting!** 🧪⚛️
